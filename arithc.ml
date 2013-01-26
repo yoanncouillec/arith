@@ -9,8 +9,11 @@ let _ =
     let in_chan = open_in input_filename in
     let out_chan = open_out_bin !output_filename in
     let lexbuf = Lexing.from_channel in_chan in
-    let expression = Parser.start Lexer.token lexbuf in
-    let instructions = Machine.compile expression in
-      List.iter (Machine.output_instr out_chan) instructions ;
-      close_out out_chan
+    let expressions = Parser.start Lexer.token lexbuf in
+    List.iter
+      (fun expression ->
+        let instructions = Machine.compile expression in
+        List.iter (Machine.output_instr out_chan) instructions)
+      expressions ;
+    close_out out_chan
       

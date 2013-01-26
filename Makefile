@@ -1,4 +1,7 @@
-all: arithc arithrun arithopt
+all: arith arithc arithrun arithopt
+
+arith: machine.cmo parser.cmi parser.cmo lexer.cmo arith.cmo
+	ocamlc -o $@ machine.cmo parser.cmo lexer.cmo arith.cmo
 
 arithc: machine.cmo parser.cmi parser.cmo lexer.cmo arithc.cmo
 	ocamlc -o $@ machine.cmo parser.cmo lexer.cmo arithc.cmo
@@ -21,10 +24,10 @@ arithopt: machine.cmo parser.cmi parser.cmo lexer.cmo arithopt.cmo
 	ocamllex $<
 
 .mly.mli:
-	ocamlyacc $<
+	menhir $<
 
 .mly.ml:
-	ocamlyacc $<
+	menhir $<
 
 .mli.cmi:
 	ocamlc -c $^
@@ -40,4 +43,7 @@ test: arithc arithrun arithopt
 	ld test.o -o test -macosx_version_min 10.7
 
 clean:
-	rm -rf *.cm* arithc arithrun arithopt *~ \#*\# *.mli *.bytecode *.s *.o test
+	rm -rf *.cm* arith arithc arithrun arithopt \#*\# *.mli *.bytecode *.s *.o test
+
+mrproper: clean
+	rm -rf *~
